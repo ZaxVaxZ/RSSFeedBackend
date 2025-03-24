@@ -1,0 +1,10 @@
+version: "2"
+sql:
+  - schema: "sql/schema/sqlc_*.sql"
+    queries: "sql/queries"
+    engine: "postgresql"
+    database:
+      uri: "postgres://postgres:aassddff123@localhost:5432/rssfeed?sslmode=disable"
+    gen:
+      go:
+        out: "internal/database"
