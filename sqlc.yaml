@@ -1,6 +1,6 @@
 version: "2"
 sql:
-  - schema: "sql/schema/sqlc_*.sql"
+  - schema: "sql/sqlc_schema/*.sql"
     queries: "sql/queries"
     engine: "postgresql"
     database:

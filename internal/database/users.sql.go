@@ -14,7 +14,7 @@ import (
 const createUser = `-- name: CreateUser :one
 INSERT INTO users (ID, username)
 VALUES ($1, $2)
-RETURNING id, created_at, updated_at, username
+RETURNING id, created_at, updated_at, username, api_key
 `
 
 type CreateUserParams struct {
@@ -30,24 +30,44 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.Username,
+		&i.ApiKey,
 	)
 	return i, err
 }
 
-const deleteUser = `-- name: DeleteUser :one
+const deleteUserByAPIKey = `-- name: DeleteUserByAPIKey :one
 DELETE FROM users
-WHERE username = $1
-RETURNING id, created_at, updated_at, username
+WHERE api_key = $1
+RETURNING id, created_at, updated_at, username, api_key
 `
 
-func (q *Queries) DeleteUser(ctx context.Context, username string) (User, error) {
-	row := q.db.QueryRowContext(ctx, deleteUser, username)
+func (q *Queries) DeleteUserByAPIKey(ctx context.Context, apiKey string) (User, error) {
+	row := q.db.QueryRowContext(ctx, deleteUserByAPIKey, apiKey)
 	var i User
 	err := row.Scan(
 		&i.ID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.Username,
+		&i.ApiKey,
+	)
+	return i, err
+}
+
+const getUserByAPIKey = `-- name: GetUserByAPIKey :one
+SELECT id, created_at, updated_at, username, api_key FROM users
+WHERE api_key = $1
+`
+
+func (q *Queries) GetUserByAPIKey(ctx context.Context, apiKey string) (User, error) {
+	row := q.db.QueryRowContext(ctx, getUserByAPIKey, apiKey)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Username,
+		&i.ApiKey,
 	)
 	return i, err
 }

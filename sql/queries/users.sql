@@ -3,7 +3,11 @@ INSERT INTO users (ID, username)
 VALUES ($1, $2)
 RETURNING *;
 
--- name: DeleteUser :one
+-- name: GetUserByAPIKey :one
+SELECT * FROM users
+WHERE api_key = $1;
+
+-- name: DeleteUserByAPIKey :one
 DELETE FROM users
-WHERE username = $1
+WHERE api_key = $1
 RETURNING *;
